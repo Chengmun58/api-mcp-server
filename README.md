@@ -2,6 +2,146 @@
 
 Model Context Protocol (MCP) server for Hostinger API.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Update](#update)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [JSON Configuration](#json-configuration-for-claude-cursor-etc)
+  - [Transport Options](#transport-options)
+    - [Standard I/O Transport](#standard-io-transport)
+    - [Streamable HTTP Transport](#streamable-http-transport)
+    - [Command Line Options](#command-line-options)
+  - [Using as an MCP Tool Provider](#using-as-an-mcp-tool-provider)
+- [Available Tools](#available-tools)
+  - [Hosting](#hosting)
+    - [hosting\_importWordpressWebsite](#hosting_importwordpresswebsite)
+    - [hosting\_deployWordpressPlugin](#hosting_deploywordpressplugin)
+    - [hosting\_deployWordpressTheme](#hosting_deploywordpresstheme)
+    - [hosting\_deployJsApplication](#hosting_deployjsapplication)
+    - [hosting\_deployStaticWebsite](#hosting_deploystaticwebsite)
+    - [hosting\_listJsDeployments](#hosting_listjsdeployments)
+    - [hosting\_showJsDeploymentLogs](#hosting_showjsdeploymentlogs)
+    - [hosting\_listAvailableDatacentersV1](#hosting_listavailabledatacentersv1)
+    - [hosting\_generateAFreeSubdomainV1](#hosting_generateafreesubdomainv1)
+    - [hosting\_verifyDomainOwnershipV1](#hosting_verifydomainownershipv1)
+    - [hosting\_listOrdersV1](#hosting_listordersv1)
+    - [hosting\_listWebsitesV1](#hosting_listwebsitesv1)
+    - [hosting\_createWebsiteV1](#hosting_createwebsitev1)
+  - [Billing](#billing)
+    - [billing\_getCatalogItemListV1](#billing_getcatalogitemlistv1)
+    - [billing\_setDefaultPaymentMethodV1](#billing_setdefaultpaymentmethodv1)
+    - [billing\_deletePaymentMethodV1](#billing_deletepaymentmethodv1)
+    - [billing\_getPaymentMethodListV1](#billing_getpaymentmethodlistv1)
+    - [billing\_getSubscriptionListV1](#billing_getsubscriptionlistv1)
+    - [billing\_disableAutoRenewalV1](#billing_disableautorenewalv1)
+    - [billing\_enableAutoRenewalV1](#billing_enableautorenewalv1)
+  - [DNS](#dns)
+    - [DNS\_getDNSSnapshotV1](#dns_getdnssnapshotv1)
+    - [DNS\_getDNSSnapshotListV1](#dns_getdnssnapshotlistv1)
+    - [DNS\_restoreDNSSnapshotV1](#dns_restorednssnapshotv1)
+    - [DNS\_getDNSRecordsV1](#dns_getdnsrecordsv1)
+    - [DNS\_updateDNSRecordsV1](#dns_updatednsrecordsv1)
+    - [DNS\_deleteDNSRecordsV1](#dns_deletednsrecordsv1)
+    - [DNS\_resetDNSRecordsV1](#dns_resetdnsrecordsv1)
+    - [DNS\_validateDNSRecordsV1](#dns_validatednsrecordsv1)
+  - [Domains](#domains)
+    - [v2\_getDomainVerificationsDIRECT](#v2_getdomainverificationsdirect)
+    - [domains\_checkDomainAvailabilityV1](#domains_checkdomainavailabilityv1)
+    - [domains\_getDomainForwardingV1](#domains_getdomainforwardingv1)
+    - [domains\_deleteDomainForwardingV1](#domains_deletedomainforwardingv1)
+    - [domains\_createDomainForwardingV1](#domains_createdomainforwardingv1)
+    - [domains\_enableDomainLockV1](#domains_enabledomainlockv1)
+    - [domains\_disableDomainLockV1](#domains_disabledomainlockv1)
+    - [domains\_getDomainDetailsV1](#domains_getdomaindetailsv1)
+    - [domains\_getDomainListV1](#domains_getdomainlistv1)
+    - [domains\_purchaseNewDomainV1](#domains_purchasenewdomainv1)
+    - [domains\_enablePrivacyProtectionV1](#domains_enableprivacyprotectionv1)
+    - [domains\_disablePrivacyProtectionV1](#domains_disableprivacyprotectionv1)
+    - [domains\_updateDomainNameserversV1](#domains_updatedomainnameserversv1)
+    - [domains\_getWHOISProfileV1](#domains_getwhoisprofilev1)
+    - [domains\_deleteWHOISProfileV1](#domains_deletewhoisprofilev1)
+    - [domains\_getWHOISProfileListV1](#domains_getwhoisprofilelistv1)
+    - [domains\_createWHOISProfileV1](#domains_createwhoisprofilev1)
+    - [domains\_getWHOISProfileUsageV1](#domains_getwhoisprofileusagev1)
+  - [Email Marketing (Reach)](#email-marketing-reach)
+    - [reach\_deleteAContactV1](#reach_deleteacontactv1)
+    - [reach\_listContactGroupsV1](#reach_listcontactgroupsv1)
+    - [reach\_listContactsV1](#reach_listcontactsv1)
+    - [reach\_createANewContactV1](#reach_createanewcontactv1)
+    - [reach\_listSegmentsV1](#reach_listsegmentsv1)
+    - [reach\_createANewContactSegmentV1](#reach_createanewcontactsegmentv1)
+    - [reach\_listSegmentContactsV1](#reach_listsegmentcontactsv1)
+    - [reach\_getSegmentDetailsV1](#reach_getsegmentdetailsv1)
+    - [reach\_createNewContactsV1](#reach_createnewcontactsv1)
+    - [reach\_listProfilesV1](#reach_listprofilesv1)
+  - [VPS](#vps)
+    - [VPS\_getDataCenterListV1](#vps_getdatacenterlistv1)
+    - [VPS\_getProjectContainersV1](#vps_getprojectcontainersv1)
+    - [VPS\_getProjectContentsV1](#vps_getprojectcontentsv1)
+    - [VPS\_deleteProjectV1](#vps_deleteprojectv1)
+    - [VPS\_getProjectListV1](#vps_getprojectlistv1)
+    - [VPS\_createNewProjectV1](#vps_createnewprojectv1)
+    - [VPS\_getProjectLogsV1](#vps_getprojectlogsv1)
+    - [VPS\_restartProjectV1](#vps_restartprojectv1)
+    - [VPS\_startProjectV1](#vps_startprojectv1)
+    - [VPS\_stopProjectV1](#vps_stopprojectv1)
+    - [VPS\_updateProjectV1](#vps_updateprojectv1)
+    - [VPS\_activateFirewallV1](#vps_activatefirewallv1)
+    - [VPS\_deactivateFirewallV1](#vps_deactivatefirewallv1)
+    - [VPS\_getFirewallDetailsV1](#vps_getfirewalldetailsv1)
+    - [VPS\_deleteFirewallV1](#vps_deletefirewallv1)
+    - [VPS\_getFirewallListV1](#vps_getfirewalllistv1)
+    - [VPS\_createNewFirewallV1](#vps_createnewfirewallv1)
+    - [VPS\_updateFirewallRuleV1](#vps_updatefirewallrulev1)
+    - [VPS\_deleteFirewallRuleV1](#vps_deletefirewallrulev1)
+    - [VPS\_createFirewallRuleV1](#vps_createfirewallrulev1)
+    - [VPS\_syncFirewallV1](#vps_syncfirewallv1)
+    - [VPS\_getPostInstallScriptV1](#vps_getpostinstallscriptv1)
+    - [VPS\_updatePostInstallScriptV1](#vps_updatepostinstallscriptv1)
+    - [VPS\_deletePostInstallScriptV1](#vps_deletepostinstallscriptv1)
+    - [VPS\_getPostInstallScriptsV1](#vps_getpostinstallscriptsv1)
+    - [VPS\_createPostInstallScriptV1](#vps_createpostinstallscriptv1)
+    - [VPS\_attachPublicKeyV1](#vps_attachpublickeyv1)
+    - [VPS\_deletePublicKeyV1](#vps_deletepublickeyv1)
+    - [VPS\_getPublicKeysV1](#vps_getpublickeysv1)
+    - [VPS\_createPublicKeyV1](#vps_createpublickeyv1)
+    - [VPS\_getTemplateDetailsV1](#vps_gettemplatedetailsv1)
+    - [VPS\_getTemplatesV1](#vps_gettemplatesv1)
+    - [VPS\_getActionDetailsV1](#vps_getactiondetailsv1)
+    - [VPS\_getActionsV1](#vps_getactionsv1)
+    - [VPS\_getAttachedPublicKeysV1](#vps_getattachedpublickeysv1)
+    - [VPS\_getBackupsV1](#vps_getbackupsv1)
+    - [VPS\_restoreBackupV1](#vps_restorebackupv1)
+    - [VPS\_setHostnameV1](#vps_sethostnamev1)
+    - [VPS\_resetHostnameV1](#vps_resethostnamev1)
+    - [VPS\_getVirtualMachineDetailsV1](#vps_getvirtualmachinedetailsv1)
+    - [VPS\_getVirtualMachinesV1](#vps_getvirtualmachinesv1)
+    - [VPS\_purchaseNewVirtualMachineV1](#vps_purchasenewvirtualmachinev1)
+    - [VPS\_getScanMetricsV1](#vps_getscanmetricsv1)
+    - [VPS\_installMonarxV1](#vps_installmonarxv1)
+    - [VPS\_uninstallMonarxV1](#vps_uninstallmonarxv1)
+    - [VPS\_getMetricsV1](#vps_getmetricsv1)
+    - [VPS\_setNameserversV1](#vps_setnameserversv1)
+    - [VPS\_createPTRRecordV1](#vps_createptrrecordv1)
+    - [VPS\_deletePTRRecordV1](#vps_deleteptrrecordv1)
+    - [VPS\_setPanelPasswordV1](#vps_setpanelpasswordv1)
+    - [VPS\_startRecoveryModeV1](#vps_startrecoverymodev1)
+    - [VPS\_stopRecoveryModeV1](#vps_stoprecoverymodev1)
+    - [VPS\_recreateVirtualMachineV1](#vps_recreatevirtualmachinev1)
+    - [VPS\_restartVirtualMachineV1](#vps_restartvirtualmachinev1)
+    - [VPS\_setRootPasswordV1](#vps_setrootpasswordv1)
+    - [VPS\_setupPurchasedVirtualMachineV1](#vps_setuppurchasedvirtualmachinev1)
+    - [VPS\_getSnapshotV1](#vps_getsnapshotv1)
+    - [VPS\_createSnapshotV1](#vps_createsnapshotv1)
+    - [VPS\_deleteSnapshotV1](#vps_deletesnapshotv1)
+    - [VPS\_restoreSnapshotV1](#vps_restoresnapshotv1)
+    - [VPS\_startVirtualMachineV1](#vps_startvirtualmachinev1)
+    - [VPS\_stopVirtualMachineV1](#vps_stopvirtualmachinev1)
+  - [Password Requirements](#password-requirements)
+
 ## Prerequisites
 - Node.js version 24 or higher
 
@@ -144,6 +284,8 @@ console.log("Tool result:", result);
 
 This MCP server provides the following tools:
 
+### Hosting
+
 ### hosting_importWordpressWebsite
 
 Import a WordPress website from an archive file to a hosting server. This tool uploads a website archive (zip, tar, tar.gz, etc.) and a database dump (.sql file) to deploy a complete WordPress website. The archive will be extracted on the server automatically. Note: This process may take a while for larger sites. After upload completion, files are being extracted and the site will be available in a few minutes. The username will be automatically resolved from the domain.
@@ -236,6 +378,8 @@ Retrieve logs for a specified JavaScript application deployment for debugging pu
 - `domain`: Domain name associated with the hosting account (e.g., example.com) (required)
 - `fromLine`: Line from which to retrieve logs (optional, default 0) 
 - `buildUuid`: UUID of the JavaScript deployment build (required)
+
+### Billing
 
 ### billing_getCatalogItemListV1
 
@@ -330,6 +474,8 @@ Use this endpoint when enable auto-renewal for a subscription.
 **Parameters**:
 
 - `subscriptionId`: Subscription ID (required)
+
+### DNS
 
 ### DNS_getDNSSnapshotV1
 
@@ -459,6 +605,8 @@ Use this endpoint to verify DNS record validity before applying changes.
 otherwise resource records' ttl's are updated and new records are appended.
 If no matching RRs are found, they are created. 
 - `zone`: zone parameter (required)
+
+### Domains
 
 ### v2_getDomainVerificationsDIRECT
 
@@ -840,6 +988,8 @@ websites list endpoint to see when your new website becomes available.
 - `order_id`: ID of the associated order (required)
 - `datacenter_code`: Datacenter code. This parameter is required when creating the first website on a new hosting plan. 
 
+### Email Marketing (Reach)
+
 ### reach_deleteAContactV1
 
 Delete a contact with the specified UUID.
@@ -984,6 +1134,8 @@ This endpoint returns all profiles available to the client, including their basi
 - **Path**: `/api/reach/v1/profiles`
 
 
+
+### VPS
 
 ### VPS_getDataCenterListV1
 
